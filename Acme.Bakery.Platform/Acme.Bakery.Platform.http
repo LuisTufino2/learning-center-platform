@@ -1,0 +1,63 @@
+@baseUrl = http://localhost:5054/api/v1
+# Change the date if it is already in the past
+@pickupDate = 2026-12-24
+
+### 1. Create product (201)
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{ "name": "Pan Frances", "price": 0.50, "stock": 100, "category": "BREAD" }
+
+### 2. Create product (201)
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{ "name": "Torta de Chocolate", "price": 45.00, "stock": 3, "category": "CAKE" }
+
+### 3. Duplicate name (409)
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{ "name": "Pan Frances", "price": 0.60, "stock": 10, "category": "BREAD" }
+
+### 4. Invalid category (400)
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{ "name": "Empanada", "price": 4.00, "stock": 10, "category": "PIZZA" }
+
+### 5. List products (200)
+GET {{baseUrl}}/products
+
+### 6. Product by id (200 / 404)
+GET {{baseUrl}}/products/2
+
+### 7. Create order (201) -> stock of product 2 goes from 3 to 1
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{ "customerName": "Ana Torres", "productId": 2, "quantity": 2, "pickupDate": "{{pickupDate}}" }
+
+### 8. Not enough stock (409)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{ "customerName": "Luis Perez", "productId": 2, "quantity": 5, "pickupDate": "{{pickupDate}}" }
+
+### 9. Product does not exist (404)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{ "customerName": "Luis Perez", "productId": 999, "quantity": 1, "pickupDate": "{{pickupDate}}" }
+
+### 10. Pickup date in the past (400)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{ "customerName": "Luis Perez", "productId": 1, "quantity": 1, "pickupDate": "2020-01-01" }
+
+### 11. List orders (200)
+GET {{baseUrl}}/orders
+
+### 12. Order by id (200 / 404)
+GET {{baseUrl}}/orders/1
